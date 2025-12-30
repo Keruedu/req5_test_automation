@@ -1,0 +1,139 @@
+{
+    "locations": {
+        "valid": [
+            {"name": "HCM Office", "country": "Viet Nam", "city": "Ho Chi Minh", "phone": "+84-28-1234567"},
+            {"name": "Hanoi Branch", "country": "Viet Nam", "city": "Ha Noi", "phone": "+84-24-7654321"},
+            {"name": "Singapore HQ", "country": "Singapore", "city": "Singapore", "phone": "+65-6789-0123"}
+        ],
+        "invalid_empty_name": [
+            {"name": "", "country": "Viet Nam", "city": "HCM", "phone": ""},
+            {"name": "   ", "country": "Viet Nam", "city": "", "phone": ""}
+        ],
+        "invalid_no_country": [
+            {"name": "Test Office", "country": "", "city": "HCM", "phone": ""}
+        ],
+        "boundary_min_name": [
+            {"name": "A", "country": "Viet Nam", "city": "", "phone": ""},
+            {"name": "X", "country": "United States", "city": "", "phone": ""}
+        ],
+        "boundary_max_name": [
+            {"name": "A" , "length": 100, "country": "Viet Nam", "city": "", "phone": ""},
+            {"name": "B" , "length": 100, "country": "Japan", "city": "", "phone": ""}
+        ],
+        "invalid_over_max_name": [
+            {"name": "A", "length": 101, "country": "Viet Nam", "city": "", "phone": ""}
+        ],
+        "invalid_phone": [
+            {"name": "Phone Test", "country": "Viet Nam", "city": "", "phone": "abc@#$invalid"},
+            {"name": "Phone Test 2", "country": "Viet Nam", "city": "", "phone": "abcdefgh"}
+        ]
+    },
+    "job_titles": {
+        "valid": [
+            {"title": "Senior Developer", "description": "Develops software applications"},
+            {"title": "Project Manager", "description": "Manages projects and teams"},
+            {"title": "QA Engineer", "description": "Tests software quality"}
+        ],
+        "invalid_empty": [
+            {"title": "", "description": ""},
+            {"title": "   ", "description": "Test"}
+        ],
+        "invalid_long_description": [
+            {"title": "Test Title", "description_length": 401}
+        ]
+    },
+    "skills": {
+        "valid": [
+            {"name": "Python"},
+            {"name": "Java"},
+            {"name": "JavaScript"},
+            {"name": "Selenium"}
+        ],
+        "invalid_empty": [
+            {"name": ""},
+            {"name": "   "}
+        ]
+    },
+    "education": {
+        "valid": [
+            {"level": "Bachelor Degree"},
+            {"level": "Master Degree"},
+            {"level": "PhD"}
+        ]
+    },
+    "languages": {
+        "valid": [
+            {"name": "English"},
+            {"name": "Vietnamese"},
+            {"name": "Việt Nam"}
+        ],
+        "special_chars": [
+            {"name": "日本語"},
+            {"name": "中文"},
+            {"name": "한국어"}
+        ]
+    },
+    "licenses": {
+        "valid": [
+            {"name": "AWS Certified Solutions Architect"},
+            {"name": "PMP Certification"},
+            {"name": "ISTQB Foundation"}
+        ]
+    },
+    "kpis": {
+        "valid": [
+            {"indicator": "Sales Target", "job_title": "", "min": 0, "max": 100},
+            {"indicator": "Customer Satisfaction", "job_title": "", "min": 1, "max": 5},
+            {"indicator": "Code Quality", "job_title": "", "min": 0, "max": 10}
+        ],
+        "invalid_min_greater_max": [
+            {"indicator": "Invalid KPI", "job_title": "", "min": 80, "max": 50},
+            {"indicator": "Wrong Range", "job_title": "", "min": 100, "max": 0}
+        ],
+        "boundary_equal": [
+            {"indicator": "Equal Range KPI", "job_title": "", "min": 50, "max": 50},
+            {"indicator": "Zero KPI", "job_title": "", "min": 0, "max": 0}
+        ],
+        "invalid_negative": [
+            {"indicator": "Negative KPI", "job_title": "", "min": -10, "max": 100},
+            {"indicator": "Both Negative", "job_title": "", "min": -50, "max": -10}
+        ],
+        "invalid_no_indicator": [
+            {"indicator": "", "job_title": "", "min": 0, "max": 100}
+        ],
+        "invalid_no_job": [
+            {"indicator": "No Job KPI", "job_title": "", "min": 0, "max": 100}
+        ]
+    },
+    "reviews": {
+        "valid": [
+            {"employee": "John Smith", "supervisor": "Jane Doe", "start_date": "2024-01-01", "end_date": "2024-12-31"},
+            {"employee": "Alice Brown", "supervisor": "Bob Wilson", "start_date": "2024-06-01", "end_date": "2024-06-30"}
+        ],
+        "invalid_no_employee": [
+            {"employee": "", "supervisor": "Jane Doe", "start_date": "2024-01-01", "end_date": "2024-12-31"}
+        ],
+        "invalid_dates": [
+            {"employee": "John", "supervisor": "Jane", "start_date": "2024-12-31", "end_date": "2024-01-01"}
+        ],
+        "invalid_same_person": [
+            {"employee": "John Smith", "supervisor": "John Smith", "start_date": "2024-01-01", "end_date": "2024-12-31"}
+        ]
+    },
+    "search": {
+        "valid_keywords": [
+            {"keyword": "HCM", "module": "Locations"},
+            {"keyword": "Dev", "module": "Job Titles"},
+            {"keyword": "Python", "module": "Skills"}
+        ],
+        "no_match": [
+            {"keyword": "XYZ123", "module": "Locations"},
+            {"keyword": "ZZZZZ", "module": "Job Titles"}
+        ],
+        "special_chars": [
+            {"keyword": "@#$%", "module": "Skills"},
+            {"keyword": "Test's", "module": "Locations"},
+            {"keyword": "O'Brien", "module": "Job Titles"}
+        ]
+    }
+}

@@ -1,0 +1,26 @@
+# --- Python Basics (Bắt buộc) ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual Environment (Môi trường ảo) ---
+# Rất quan trọng để không đẩy thư viện lên git
+venv/
+env/
+.venv/
+
+# --- Project Artifacts (File sinh ra khi chạy test) ---
+# Folder chứa ảnh chụp màn hình (như trong hình của bạn)
+screenshots/
+# File báo cáo (nếu file này tự sinh ra mỗi lần chạy, không nên commit)
+Automation_Testing_Report.md
+*.log
+
+# --- Cấu hình & Bảo mật ---
+# Nếu config.py chứa mật khẩu/API key thì bỏ comment dòng dưới
+# config.py
+.env
+
+# --- IDE Settings (Cấu hình editor) ---
+.vscode/
+.idea/
