@@ -17,6 +17,7 @@ import logging
 from datetime import datetime
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -686,25 +687,37 @@ def run_tests_on_browser(browser: str, test_cases: list) -> List[TestResult]:
 
 
 def main():
-    """Main entry point - runs tests on all 3 browsers"""
+    """Main entry point - runs tests on all 3 browsers IN PARALLEL"""
     print("=" * 60)
     print("OrangeHRM AUTOMATION TESTING")
-    print("Requirement 5: Multi-Browser + Data-Driven")
+    print("Requirement 5: Multi-Browser + Data-Driven + PARALLEL")
     print("=" * 60)
     
     start_time = datetime.now()
     all_results = []
     browsers_tested = []
     
-    # Run on all 3 browsers
-    for browser in BROWSERS:
-        try:
-            results = run_tests_on_browser(browser, TEST_CASES)
-            if results:
-                all_results.extend(results)
-                browsers_tested.append(browser)
-        except Exception as e:
-            logger.error(f"Error testing on {browser}: {e}")
+    # Run on all 3 browsers IN PARALLEL using ThreadPoolExecutor
+    print(f"\n🚀 Starting PARALLEL execution on {len(BROWSERS)} browsers: {', '.join(BROWSERS)}")
+    
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        # Submit all browser tests to run in parallel
+        future_to_browser = {
+            executor.submit(run_tests_on_browser, browser, TEST_CASES): browser
+            for browser in BROWSERS
+        }
+        
+        # Collect results as they complete
+        for future in as_completed(future_to_browser):
+            browser = future_to_browser[future]
+            try:
+                results = future.result()
+                if results:
+                    all_results.extend(results)
+                    browsers_tested.append(browser)
+                    print(f"✓ {browser.upper()} completed: {len(results)} tests")
+            except Exception as e:
+                logger.error(f"Error testing on {browser}: {e}")
     
     end_time = datetime.now()
     

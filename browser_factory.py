@@ -125,9 +125,16 @@ class BrowserFactory:
         options.add_argument(f"--window-size={WINDOW_SIZE[0]},{WINDOW_SIZE[1]}")
         
         try:
+            # Try webdriver-manager first
             if USE_WEBDRIVER_MANAGER:
-                service = EdgeService(EdgeChromiumDriverManager().install())
-                driver = webdriver.Edge(service=service, options=options)
+                try:
+                    service = EdgeService(EdgeChromiumDriverManager().install())
+                    driver = webdriver.Edge(service=service, options=options)
+                except Exception as wdm_error:
+                    # Fallback to local Edge driver if webdriver-manager fails
+                    logger.warning(f"webdriver-manager failed for Edge: {wdm_error}")
+                    logger.info("Trying local Edge driver...")
+                    driver = webdriver.Edge(options=options)
             else:
                 driver = webdriver.Edge(options=options)
             
