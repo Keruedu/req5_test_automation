@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrangeHRM Automation Test Report</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header { 
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white; 
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header .subtitle { opacity: 0.9; font-size: 1.2em; }
+        .info-bar {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .info-item { text-align: center; }
+        .info-item .label { color: #666; font-size: 0.9em; }
+        .info-item .value { font-weight: bold; color: #333; font-size: 1.1em; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card .number { font-size: 2.5em; font-weight: bold; }
+        .stat-card .label { color: #666; margin-top: 5px; }
+        .stat-card.total .number { color: #3498db; }
+        .stat-card.passed .number { color: #27ae60; }
+        .stat-card.failed .number { color: #e74c3c; }
+        .stat-card.skipped .number { color: #f39c12; }
+        .stat-card.errors .number { color: #9b59b6; }
+        
+        .section { padding: 30px; }
+        .section-title { 
+            font-size: 1.5em; 
+            color: #2c3e50; 
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        .browser-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .browser-tab {
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .browser-tab.active { background: #3498db; color: white; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th { 
+            background: #2c3e50; 
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover { background: #f5f5f5; }
+        
+        .status { 
+            padding: 5px 15px; 
+            border-radius: 20px; 
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        .status.passed { background: #d4edda; color: #155724; }
+        .status.failed { background: #f8d7da; color: #721c24; }
+        .status.skipped { background: #fff3cd; color: #856404; }
+        .status.error { background: #f5c6cb; color: #721c24; }
+        
+        .progress-bar {
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .module-chart {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .module-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+        }
+        .module-card h4 { color: #2c3e50; margin-bottom: 10px; }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background: #2c3e50;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .info-bar { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 OrangeHRM Automation Test Report</h1>
+            <p class="subtitle">OrangeHRM - HR Administration & Performance Management</p>
+        </div>
+        
+        <div class="info-bar">
+            <div class="info-item">
+                <div class="label">Tester</div>
+                <div class="value">Lê Hoàng Việt</div>
+            </div>
+            <div class="info-item">
+                <div class="label">MSSV</div>
+                <div class="value">22120430</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Ngày thực hiện</div>
+                <div class="value">31/12/2025 01:17</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Thời gian chạy</div>
+                <div class="value">726.12s</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Browsers</div>
+                <div class="value">chrome, firefox, edge</div>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <div class="number">141</div>
+                <div class="label">Total Tests</div>
+            </div>
+            <div class="stat-card passed">
+                <div class="number">141</div>
+                <div class="label">Passed ✓</div>
+            </div>
+            <div class="stat-card failed">
+                <div class="number">0</div>
+                <div class="label">Failed ✗</div>
+            </div>
+            <div class="stat-card skipped">
+                <div class="number">0</div>
+                <div class="label">Skipped ⊘</div>
+            </div>
+            <div class="stat-card errors">
+                <div class="number">0</div>
+                <div class="label">Errors ⚠</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">📊 Pass Rate</h2>
+            <div class="progress-bar">
+                <div class="fill" style="width: 100.0%">100.0%</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">📁 Kết quả theo Module</h2>
+            <div class="module-chart">
+
+                <div class="module-card">
+                    <h4>Locations</h4>
+                    <p>✓ Passed: 30 | ✗ Failed: 0</p>
+                    <p>Pass Rate: 100.0%</p>
+                </div>
+
+                <div class="module-card">
+                    <h4>Job Titles</h4>
+                    <p>✓ Passed: 15 | ✗ Failed: 0</p>
+                    <p>Pass Rate: 100.0%</p>
+                </div>
+
+                <div class="module-card">
+                    <h4>Skills</h4>
+                    <p>✓ Passed: 6 | ✗ Failed: 0</p>
+                    <p>Pass Rate: 100.0%</p>
+                </div>
+
+                <div class="module-card">
+                    <h4>Education</h4>
+                    <p>✓ Passed: 3 | ✗ Failed: 0</p>
+                    <p>Pass Rate: 100.0%</p>
+                </div>
+
+                <div class="module-card">
+                    <h4>Languages</h4>
+                    <p>✓ Passed: 3 | ✗ Failed: 0</p>
+                    <p>Pass Rate: 100.0%</p>
+                </div>
+
+                <div class="module-card">
+                    <h4>Licenses</h4>
+                    <p>✓ Passed: 3 | ✗ Failed: 0</p>
+                    <p>Pass Rate: 100.0%</p>
+                </div>
+
+                <div class="module-card">
+                    <h4>KPIs</h4>
+                    <p>✓ Passed: 21 | ✗ Failed: 0</p>
+                    <p>Pass Rate: 100.0%</p>
+                </div>
+
+                <div class="module-card">
+                    <h4>Reviews</h4>
+                    <p>✓ Passed: 36 | ✗ Failed: 0</p>
+                    <p>Pass Rate: 100.0%</p>
+                </div>
+
+                <div class="module-card">
+                    <h4>Trackers</h4>
+                    <p>✓ Passed: 6 | ✗ Failed: 0</p>
+                    <p>Pass Rate: 100.0%</p>
+                </div>
+
+                <div class="module-card">
+                    <h4>Search</h4>
+                    <p>✓ Passed: 18 | ✗ Failed: 0</p>
+                    <p>Pass Rate: 100.0%</p>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">🔬 Kết quả theo Kỹ thuật</h2>
+            <table>
+                <tr>
+                    <th>Kỹ thuật</th>
+                    <th>Số lượng Test Cases</th>
+                </tr>
+
+                <tr>
+                    <td>Domain</td>
+                    <td>63</td>
+                </tr>
+
+                <tr>
+                    <td>Use Case</td>
+                    <td>15</td>
+                </tr>
+
+                <tr>
+                    <td>Decision Table</td>
+                    <td>21</td>
+                </tr>
+
+                <tr>
+                    <td>State Transition</td>
+                    <td>24</td>
+                </tr>
+
+                <tr>
+                    <td>All-Pair</td>
+                    <td>18</td>
+                </tr>
+
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">📋 Chi tiết Test Cases</h2>
+            <table>
+                <tr>
+                    <th>Test ID</th>
+                    <th>Test Name</th>
+                    <th>Module</th>
+                    <th>Browser</th>
+                    <th>Status</th>
+                    <th>Duration</th>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D01</strong></td>
+                    <td>Add location - valid data</td>
+                    <td>Locations</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>7.27s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D02</strong></td>
+                    <td>Add location - min name (1 char)</td>
+                    <td>Locations</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>20.70s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D03</strong></td>
+                    <td>Add location - max name (100 chars)</td>
+                    <td>Locations</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>17.03s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D04</strong></td>
+                    <td>Add location - empty name</td>
+                    <td>Locations</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>5.86s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D05</strong></td>
+                    <td>Add location - name > 100 chars</td>
+                    <td>Locations</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>15.34s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D06</strong></td>
+                    <td>Add location - no country</td>
+                    <td>Locations</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>7.11s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D07</strong></td>
+                    <td>Add location - duplicate name</td>
+                    <td>Locations</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>9.59s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D08</strong></td>
+                    <td>Add location - invalid phone</td>
+                    <td>Locations</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>10.07s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_D01</strong></td>
+                    <td>Add job title - valid</td>
+                    <td>Job Titles</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>15.29s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_D02</strong></td>
+                    <td>Add job title - empty</td>
+                    <td>Job Titles</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>12.59s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_D03</strong></td>
+                    <td>Add job title - duplicate</td>
+                    <td>Job Titles</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>22.07s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_D04</strong></td>
+                    <td>Add job title - description > 400</td>
+                    <td>Job Titles</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>12.90s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_UC01</strong></td>
+                    <td>Delete job title in use</td>
+                    <td>Job Titles</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>23.80s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_SKL_D01</strong></td>
+                    <td>Add skill - valid</td>
+                    <td>Skills</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>22.23s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_SKL_D02</strong></td>
+                    <td>Add skill - duplicate</td>
+                    <td>Skills</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>18.03s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_EDU_D01</strong></td>
+                    <td>Add education - valid</td>
+                    <td>Education</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>10.47s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LNG_D01</strong></td>
+                    <td>Add language - special chars</td>
+                    <td>Languages</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>19.64s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LIC_D01</strong></td>
+                    <td>Add license - valid</td>
+                    <td>Licenses</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>22.15s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_D01</strong></td>
+                    <td>Add KPI - valid (min=0, max=100)</td>
+                    <td>KPIs</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>20.03s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_D02</strong></td>
+                    <td>Add KPI - min > max</td>
+                    <td>KPIs</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>10.15s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_D03</strong></td>
+                    <td>Add KPI - min = max = 50</td>
+                    <td>KPIs</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>19.47s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_D04</strong></td>
+                    <td>Add KPI - negative min</td>
+                    <td>KPIs</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>11.17s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_DT01</strong></td>
+                    <td>KPI: All valid -> OK</td>
+                    <td>KPIs</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>5.13s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_DT02</strong></td>
+                    <td>KPI: NoIndicator -> Error</td>
+                    <td>KPIs</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>16.19s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_DT03</strong></td>
+                    <td>KPI: NoJobTitle -> Error</td>
+                    <td>KPIs</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>13.03s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_REV_DT01</strong></td>
+                    <td>Review: All valid -> OK</td>
+                    <td>Reviews</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>8.28s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_REV_DT02</strong></td>
+                    <td>Review: NoEmployee -> Error</td>
+                    <td>Reviews</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>7.48s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_REV_DT03</strong></td>
+                    <td>Review: StartDate > EndDate</td>
+                    <td>Reviews</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>20.12s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_REV_DT04</strong></td>
+                    <td>Review: Supervisor = Employee</td>
+                    <td>Reviews</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>24.84s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_TRK_UC01</strong></td>
+                    <td>View My Trackers - empty</td>
+                    <td>Trackers</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>18.36s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_TRK_UC02</strong></td>
+                    <td>Search Trackers by name</td>
+                    <td>Trackers</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>6.18s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_01</strong></td>
+                    <td>Create Review -> Inactive</td>
+                    <td>Reviews</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>11.40s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_02</strong></td>
+                    <td>Activate Review</td>
+                    <td>Reviews</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>21.59s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_03</strong></td>
+                    <td>Self-Evaluation -> In Progress</td>
+                    <td>Reviews</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>21.34s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_04</strong></td>
+                    <td>Complete All -> Completed</td>
+                    <td>Reviews</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>20.33s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_05</strong></td>
+                    <td>Delete Draft Review</td>
+                    <td>Reviews</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>7.76s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_06</strong></td>
+                    <td>Update Completed -> Error</td>
+                    <td>Reviews</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>22.35s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_07</strong></td>
+                    <td>Complete without eval -> Error</td>
+                    <td>Reviews</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>11.59s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_08</strong></td>
+                    <td>Delete In Progress -> Error</td>
+                    <td>Reviews</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>21.85s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_01</strong></td>
+                    <td>Locations + Valid + Asc</td>
+                    <td>Search</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>11.64s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_02</strong></td>
+                    <td>Job Titles + Empty + Desc</td>
+                    <td>Search</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>18.83s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_03</strong></td>
+                    <td>Skills + Special Chars</td>
+                    <td>Search</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>19.54s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_04</strong></td>
+                    <td>KPIs + No Match</td>
+                    <td>Search</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>21.73s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_05</strong></td>
+                    <td>Locations + SQL Injection</td>
+                    <td>Search</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>23.21s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_06</strong></td>
+                    <td>Job Titles + Valid + Asc</td>
+                    <td>Search</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>20.42s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_UC01</strong></td>
+                    <td>Delete location in use</td>
+                    <td>Locations</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>8.52s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_UC02</strong></td>
+                    <td>Search location - partial</td>
+                    <td>Locations</td>
+                    <td>chrome</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>8.66s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D01</strong></td>
+                    <td>Add location - valid data</td>
+                    <td>Locations</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>12.77s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D02</strong></td>
+                    <td>Add location - min name (1 char)</td>
+                    <td>Locations</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>7.05s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D03</strong></td>
+                    <td>Add location - max name (100 chars)</td>
+                    <td>Locations</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>7.99s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D04</strong></td>
+                    <td>Add location - empty name</td>
+                    <td>Locations</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>22.70s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D05</strong></td>
+                    <td>Add location - name > 100 chars</td>
+                    <td>Locations</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>23.00s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D06</strong></td>
+                    <td>Add location - no country</td>
+                    <td>Locations</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>10.46s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D07</strong></td>
+                    <td>Add location - duplicate name</td>
+                    <td>Locations</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>9.13s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D08</strong></td>
+                    <td>Add location - invalid phone</td>
+                    <td>Locations</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>16.61s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_D01</strong></td>
+                    <td>Add job title - valid</td>
+                    <td>Job Titles</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>7.13s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_D02</strong></td>
+                    <td>Add job title - empty</td>
+                    <td>Job Titles</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>9.39s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_D03</strong></td>
+                    <td>Add job title - duplicate</td>
+                    <td>Job Titles</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>10.26s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_D04</strong></td>
+                    <td>Add job title - description > 400</td>
+                    <td>Job Titles</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>19.34s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_UC01</strong></td>
+                    <td>Delete job title in use</td>
+                    <td>Job Titles</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>13.47s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_SKL_D01</strong></td>
+                    <td>Add skill - valid</td>
+                    <td>Skills</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>13.18s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_SKL_D02</strong></td>
+                    <td>Add skill - duplicate</td>
+                    <td>Skills</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>13.39s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_EDU_D01</strong></td>
+                    <td>Add education - valid</td>
+                    <td>Education</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>12.30s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LNG_D01</strong></td>
+                    <td>Add language - special chars</td>
+                    <td>Languages</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>21.22s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LIC_D01</strong></td>
+                    <td>Add license - valid</td>
+                    <td>Licenses</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>10.81s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_D01</strong></td>
+                    <td>Add KPI - valid (min=0, max=100)</td>
+                    <td>KPIs</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>5.63s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_D02</strong></td>
+                    <td>Add KPI - min > max</td>
+                    <td>KPIs</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>11.10s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_D03</strong></td>
+                    <td>Add KPI - min = max = 50</td>
+                    <td>KPIs</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>5.43s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_D04</strong></td>
+                    <td>Add KPI - negative min</td>
+                    <td>KPIs</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>13.41s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_DT01</strong></td>
+                    <td>KPI: All valid -> OK</td>
+                    <td>KPIs</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>22.19s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_DT02</strong></td>
+                    <td>KPI: NoIndicator -> Error</td>
+                    <td>KPIs</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>21.85s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_DT03</strong></td>
+                    <td>KPI: NoJobTitle -> Error</td>
+                    <td>KPIs</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>17.62s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_REV_DT01</strong></td>
+                    <td>Review: All valid -> OK</td>
+                    <td>Reviews</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>20.81s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_REV_DT02</strong></td>
+                    <td>Review: NoEmployee -> Error</td>
+                    <td>Reviews</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>15.92s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_REV_DT03</strong></td>
+                    <td>Review: StartDate > EndDate</td>
+                    <td>Reviews</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>24.61s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_REV_DT04</strong></td>
+                    <td>Review: Supervisor = Employee</td>
+                    <td>Reviews</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>6.74s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_TRK_UC01</strong></td>
+                    <td>View My Trackers - empty</td>
+                    <td>Trackers</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>24.06s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_TRK_UC02</strong></td>
+                    <td>Search Trackers by name</td>
+                    <td>Trackers</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>22.15s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_01</strong></td>
+                    <td>Create Review -> Inactive</td>
+                    <td>Reviews</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>12.04s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_02</strong></td>
+                    <td>Activate Review</td>
+                    <td>Reviews</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>5.80s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_03</strong></td>
+                    <td>Self-Evaluation -> In Progress</td>
+                    <td>Reviews</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>15.98s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_04</strong></td>
+                    <td>Complete All -> Completed</td>
+                    <td>Reviews</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>5.15s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_05</strong></td>
+                    <td>Delete Draft Review</td>
+                    <td>Reviews</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>11.40s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_06</strong></td>
+                    <td>Update Completed -> Error</td>
+                    <td>Reviews</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>10.38s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_07</strong></td>
+                    <td>Complete without eval -> Error</td>
+                    <td>Reviews</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>22.09s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_08</strong></td>
+                    <td>Delete In Progress -> Error</td>
+                    <td>Reviews</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>23.89s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_01</strong></td>
+                    <td>Locations + Valid + Asc</td>
+                    <td>Search</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>8.43s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_02</strong></td>
+                    <td>Job Titles + Empty + Desc</td>
+                    <td>Search</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>16.95s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_03</strong></td>
+                    <td>Skills + Special Chars</td>
+                    <td>Search</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>23.03s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_04</strong></td>
+                    <td>KPIs + No Match</td>
+                    <td>Search</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>15.49s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_05</strong></td>
+                    <td>Locations + SQL Injection</td>
+                    <td>Search</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>14.44s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_06</strong></td>
+                    <td>Job Titles + Valid + Asc</td>
+                    <td>Search</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>11.43s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_UC01</strong></td>
+                    <td>Delete location in use</td>
+                    <td>Locations</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>20.11s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_UC02</strong></td>
+                    <td>Search location - partial</td>
+                    <td>Locations</td>
+                    <td>firefox</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>24.00s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D01</strong></td>
+                    <td>Add location - valid data</td>
+                    <td>Locations</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>15.23s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D02</strong></td>
+                    <td>Add location - min name (1 char)</td>
+                    <td>Locations</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>18.46s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D03</strong></td>
+                    <td>Add location - max name (100 chars)</td>
+                    <td>Locations</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>22.38s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D04</strong></td>
+                    <td>Add location - empty name</td>
+                    <td>Locations</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>7.04s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D05</strong></td>
+                    <td>Add location - name > 100 chars</td>
+                    <td>Locations</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>6.59s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D06</strong></td>
+                    <td>Add location - no country</td>
+                    <td>Locations</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>12.23s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D07</strong></td>
+                    <td>Add location - duplicate name</td>
+                    <td>Locations</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>23.35s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_D08</strong></td>
+                    <td>Add location - invalid phone</td>
+                    <td>Locations</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>21.08s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_D01</strong></td>
+                    <td>Add job title - valid</td>
+                    <td>Job Titles</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>21.90s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_D02</strong></td>
+                    <td>Add job title - empty</td>
+                    <td>Job Titles</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>16.36s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_D03</strong></td>
+                    <td>Add job title - duplicate</td>
+                    <td>Job Titles</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>9.62s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_D04</strong></td>
+                    <td>Add job title - description > 400</td>
+                    <td>Job Titles</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>17.83s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_JOB_UC01</strong></td>
+                    <td>Delete job title in use</td>
+                    <td>Job Titles</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>16.31s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_SKL_D01</strong></td>
+                    <td>Add skill - valid</td>
+                    <td>Skills</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>23.44s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_SKL_D02</strong></td>
+                    <td>Add skill - duplicate</td>
+                    <td>Skills</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>15.59s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_EDU_D01</strong></td>
+                    <td>Add education - valid</td>
+                    <td>Education</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>5.37s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LNG_D01</strong></td>
+                    <td>Add language - special chars</td>
+                    <td>Languages</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>17.81s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LIC_D01</strong></td>
+                    <td>Add license - valid</td>
+                    <td>Licenses</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>6.33s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_D01</strong></td>
+                    <td>Add KPI - valid (min=0, max=100)</td>
+                    <td>KPIs</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>18.56s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_D02</strong></td>
+                    <td>Add KPI - min > max</td>
+                    <td>KPIs</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>16.42s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_D03</strong></td>
+                    <td>Add KPI - min = max = 50</td>
+                    <td>KPIs</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>20.83s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_D04</strong></td>
+                    <td>Add KPI - negative min</td>
+                    <td>KPIs</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>11.52s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_DT01</strong></td>
+                    <td>KPI: All valid -> OK</td>
+                    <td>KPIs</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>15.06s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_DT02</strong></td>
+                    <td>KPI: NoIndicator -> Error</td>
+                    <td>KPIs</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>6.61s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_KPI_DT03</strong></td>
+                    <td>KPI: NoJobTitle -> Error</td>
+                    <td>KPIs</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>19.69s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_REV_DT01</strong></td>
+                    <td>Review: All valid -> OK</td>
+                    <td>Reviews</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>11.26s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_REV_DT02</strong></td>
+                    <td>Review: NoEmployee -> Error</td>
+                    <td>Reviews</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>21.73s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_REV_DT03</strong></td>
+                    <td>Review: StartDate > EndDate</td>
+                    <td>Reviews</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>24.42s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_REV_DT04</strong></td>
+                    <td>Review: Supervisor = Employee</td>
+                    <td>Reviews</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>18.35s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_TRK_UC01</strong></td>
+                    <td>View My Trackers - empty</td>
+                    <td>Trackers</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>7.79s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_TRK_UC02</strong></td>
+                    <td>Search Trackers by name</td>
+                    <td>Trackers</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>5.79s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_01</strong></td>
+                    <td>Create Review -> Inactive</td>
+                    <td>Reviews</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>17.29s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_02</strong></td>
+                    <td>Activate Review</td>
+                    <td>Reviews</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>18.08s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_03</strong></td>
+                    <td>Self-Evaluation -> In Progress</td>
+                    <td>Reviews</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>14.28s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_04</strong></td>
+                    <td>Complete All -> Completed</td>
+                    <td>Reviews</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>22.35s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_05</strong></td>
+                    <td>Delete Draft Review</td>
+                    <td>Reviews</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>7.09s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_06</strong></td>
+                    <td>Update Completed -> Error</td>
+                    <td>Reviews</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>6.85s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_07</strong></td>
+                    <td>Complete without eval -> Error</td>
+                    <td>Reviews</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>14.10s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_ST_08</strong></td>
+                    <td>Delete In Progress -> Error</td>
+                    <td>Reviews</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>15.82s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_01</strong></td>
+                    <td>Locations + Valid + Asc</td>
+                    <td>Search</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>7.23s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_02</strong></td>
+                    <td>Job Titles + Empty + Desc</td>
+                    <td>Search</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>10.70s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_03</strong></td>
+                    <td>Skills + Special Chars</td>
+                    <td>Search</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>10.18s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_04</strong></td>
+                    <td>KPIs + No Match</td>
+                    <td>Search</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>6.74s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_05</strong></td>
+                    <td>Locations + SQL Injection</td>
+                    <td>Search</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>19.38s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_AP_06</strong></td>
+                    <td>Job Titles + Valid + Asc</td>
+                    <td>Search</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>23.42s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_UC01</strong></td>
+                    <td>Delete location in use</td>
+                    <td>Locations</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>24.23s</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TC_LOC_UC02</strong></td>
+                    <td>Search location - partial</td>
+                    <td>Locations</td>
+                    <td>edge</td>
+                    <td><span class="status passed">PASSED</span></td>
+                    <td>15.11s</td>
+                </tr>
+
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>🎓 Môn học: Kiểm thử phần mềm</p>
+            <p>📅 Báo cáo được tạo lúc: 31/12/2025 01:17:07</p>
+        </div>
+    </div>
+</body>
+</html>
